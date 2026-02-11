@@ -6,14 +6,8 @@ import math
 # Brain should be defined by default
 brain=Brain()
 
-# Robot configuration code
-motor_10 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
-motor_2 = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
-
-
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
-
 
 # Make random actually random
 def initializeRandomSeed():
@@ -23,7 +17,6 @@ def initializeRandomSeed():
       
 # Set random seed 
 initializeRandomSeed()
-
 
 def play_vexcode_sound(sound_name):
     # Helper to make playing sounds from the V5 in VEXcode easier and
@@ -37,9 +30,6 @@ wait(200, MSEC)
 print("\033[2J")
 
 #endregion VEXcode Generated Robot Configuration
-from vex import *
-
-brain = Brain()
 
 # Create the motors
 left_motor  = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
@@ -50,32 +40,35 @@ drivetrain = DriveTrain(left_motor, right_motor,
                         319.19,   # wheel circumference (4" wheels) [web:11]
                         295,      # track width (distance between left and right wheels) [web:11]
                         40,       # wheelbase (front‑back distance) [web:11]
-                        MM,
-                        1)        # external gear ratio [web:11]
+                        MM,       # Distance Units (MM)
+                        1         # external gear ratio [web:11]
+)
+
+# Create the controller
 controller = Controller(PRIMARY)
+
+# Dynamically Adjust the speed
 left_speed = controller.axis3.position() + controller.axis1.position()
 
-def when_started1():
+def when_started():
     # drive forward 10 inches
     #drivetrain.drive_for(FORWARD, 10, INCHES)    # [web:11]
     
-    left_motor.set_velocity(20, RPM);
+    left_motor.set_velocity(20, RPM)
     
     brain.screen.print("VEXcode")
-
-    drivetrain
 
     #drivetrain.set_drive_velocity(0.1, PERCENT);
     #drivetrain.drive_for(LEFT, 10, INCHES)
     # turn right 90 degrees (approx by time or distance, or use SmartDrive if you have inertial) [web:15]
 
-when_started1()
+when_started()
 
 while True:
 
     if controller.buttonR1.pressing():
         
-        left_motor.set_velocity(controller.axis3.position() + controller.axis1.position(), PERCENT);
+        left_motor.set_velocity(controller.axis3.position() + controller.axis1.position(), PERCENT)
         left_motor.spin(FORWARD)
         
     else:
