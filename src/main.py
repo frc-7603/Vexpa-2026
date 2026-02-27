@@ -74,6 +74,8 @@ right_motor = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
 chain_load_motor = Motor(Ports.PORT5, GearSetting.RATIO_18_1, False)
 wheel_load_motor = Motor(Ports.PORT4, GearSetting.RATIO_18_1, True)
 
+velocity = 0
+
 # control variables
  
 speed_offset = 1
@@ -178,6 +180,7 @@ def get_speed():
 def loading_cycle(): # toggling cube motors based on button input
     
     global wheel_load_motor, chain_load_motor
+    global velocity
 
     if controller_1.buttonUp.pressing(): # loading cubes via toggling motors
 
@@ -185,6 +188,7 @@ def loading_cycle(): # toggling cube motors based on button input
 
         wheel_load_motor.set_velocity(100,PERCENT)
         chain_load_motor.set_velocity(80, PERCENT)
+        velocity = 100
     
     elif controller_1.buttonDown.pressing(): # de-loading cubes via reversing motors
 
@@ -192,6 +196,7 @@ def loading_cycle(): # toggling cube motors based on button input
 
         wheel_load_motor.set_velocity(-100,PERCENT)
         chain_load_motor.set_velocity(-80, PERCENT)
+        velocity = -100
     
     else: # stop motors otherwise
 
@@ -199,16 +204,17 @@ def loading_cycle(): # toggling cube motors based on button input
 
         wheel_load_motor.set_velocity(0,PERCENT)
         chain_load_motor.set_velocity(0, PERCENT)
+        velocity = 0
 
 
-#controller_1.screen.set_cursor(1, 1)
-#controller_1.screen.print("Action: Idle")
+controller_1.screen.set_cursor(1, 1)
+controller_1.screen.print("Action: Idle")
 
-#controller_1.screen.set_cursor(2, 1)
-#controller_1.screen.print(f"Vel: 0% | Tgt: 0%")
+controller_1.screen.set_cursor(2, 1)
+controller_1.screen.print(f"Vel: {velocity:.1f}% | Tgt: 0%")
 
-#controller_1.screen.set_cursor(3, 1)
-#controller_1.screen.print(f"Axes: 0, 0")
+controller_1.screen.set_cursor(3, 1)
+controller_1.screen.print("Axes: 0, 0")
 
 while True: # drive loop
 
