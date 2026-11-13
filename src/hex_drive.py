@@ -125,7 +125,7 @@ while (True):
 
         # degrees_spun wraps around at 3600
         # the ratio of wheel radius to robot radius is about 10:1 
-        # so 10 revolutions of the wheels = 1 revolution of the robot approx.abs
+        # so 10 revolutions of the wheels = 1 revolution of the robot approx.
 
         degrees_spun = degrees_spun % 3600
         spin_amount = (90 * abs(pos_axis1) / 100) / 10
@@ -137,7 +137,7 @@ while (True):
             motor_right_back.spin_for(FORWARD, spin_amount, DEGREES)
             motor_left_back.spin_for(FORWARD, spin_amount, DEGREES)
             degrees_spun += spin_amount
-            
+
         else: 
 
             motor_right_front.spin_for(REVERSE, spin_amount, DEGREES)
