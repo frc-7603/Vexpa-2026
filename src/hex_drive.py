@@ -88,18 +88,20 @@ def reset_spin():
     global degrees_spun
 
     if degrees_spun > 1800:
+
         spin_amount = 3600 - degrees_spun
         motor_right_front.spin_for(FORWARD, spin_amount, DEGREES)
         motor_left_front.spin_for(FORWARD, spin_amount, DEGREES)
         motor_right_back.spin_for(FORWARD, spin_amount, DEGREES)
         motor_left_back.spin_for(FORWARD, spin_amount, DEGREES)
+
     else: 
+
         spin_amount = degrees_spun
         motor_right_front.spin_for(REVERSE, spin_amount, DEGREES)
         motor_left_front.spin_for(REVERSE, spin_amount, DEGREES)
         motor_right_back.spin_for(REVERSE, spin_amount, DEGREES)
         motor_left_back.spin_for(REVERSE, spin_amount, DEGREES)
-
 
     return
 
@@ -129,12 +131,15 @@ while (True):
         spin_amount = (90 * abs(pos_axis1) / 100) / 10
 
         if pos_axis1 > 0:
+
             motor_right_front.spin_for(FORWARD, spin_amount, DEGREES)
             motor_left_front.spin_for(FORWARD, spin_amount, DEGREES)
             motor_right_back.spin_for(FORWARD, spin_amount, DEGREES)
             motor_left_back.spin_for(FORWARD, spin_amount, DEGREES)
             degrees_spun += spin_amount
+            
         else: 
+
             motor_right_front.spin_for(REVERSE, spin_amount, DEGREES)
             motor_left_front.spin_for(REVERSE, spin_amount, DEGREES)
             motor_right_back.spin_for(REVERSE, spin_amount, DEGREES)
