@@ -63,6 +63,8 @@ motor_left_front.set_position(0, DEGREES)
 motor_right_back.set_position(0, DEGREES)
 motor_left_back.set_position(0, DEGREES)
 
+degrees_spun = 0
+
 def strafe(mag_x, mag_y):
 
     lf_y = mag_y
@@ -81,27 +83,38 @@ while(True):
     pos_axis1 = controller_1.axis1.position()
 
     if abs(pos_axis3) > abs(pos_axis1):
+
         current_voltage = (pos_axis3/100) * 12
 
         motor_right_front.spin(FORWARD, current_voltage, VOLT)
         motor_left_front.spin(REVERSE, current_voltage, VOLT)
         motor_right_back.spin(FORWARD, current_voltage, VOLT)
         motor_left_back.spin(REVERSE, current_voltage, VOLT)
+
     elif abs(pos_axis1) > abs(pos_axis3):
-        current_voltage = (pos_axis1/100) * 12
+        # degrees_spun wraps around at 3600
+        # the ratio of wheel radius to robot radius is about 10:1 
+        # so 10 revolutions of the wheels = 1 revolution of the robot approx.abs
 
-        #motor_right_front.spin(FORWARD, current_voltage, VOLT)
-        #motor_left_front.spin(FORWARD, current_voltage, VOLT)
-        #motor_right_back.spin(FORWARD, current_voltage, VOLT)
-        #motor_left_back.spin(FORWARD, current_voltage, VOLT)
+        degrees_spun = degrees_spun % 3600
+        spin_amount = (90 * abs(pos_axis1) / 100) / 10
 
-        motor_right_front.sp(FORWARD, 
+        if pos_axis1 > 0:
+            motor_right_front.spin_for(FORWARD, spin_amount, DEGREES)
+            motor_left_front.spin_for(FORWARD, spin_amount, DEGREES)
+            motor_right_back.spin_for(FORWARD, spin_amount, DEGREES)
+            motor_left_back.spin_for(FORWARD, spin_amount, DEGREES)
+        else: 
+            motor_right_front.spin_for(REVERSE, spin_amount, DEGREES)
+            motor_left_front.spin_for(REVERSE, spin_amount, DEGREES)
+            motor_right_back.spin_for(REVERSE, spin_amount, DEGREES)
+            motor_left_back.spin_for(REVERSE, spin_amount, DEGREES)
+            
     else:
         motor_right_front.stop(HOLD)
         motor_left_front.stop(HOLD)
         motor_right_back.stop(HOLD)
         motor_left_back.stop(HOLD)
-        motor_right_front.
     
 
     
