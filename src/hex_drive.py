@@ -63,6 +63,8 @@ motor_left_front.set_position(0, DEGREES)
 motor_right_back.set_position(0, DEGREES)
 motor_left_back.set_position(0, DEGREES)
 
+degrees_spun = 0
+
 def strafe(mag_x, mag_y):
 
     lf_y = mag_y
@@ -75,33 +77,80 @@ def strafe(mag_x, mag_y):
     lf_x = rf_x
     lb_x = rb_x
 
+    mag_rf = (rf_x + rf_y) / 2
+    mag_lf = (lf_x + lf_y) / 2
+    mag_rb = (rb_x + rb_y) / 2
+    mag_lb = (lb_x + lb_y) / 2
 
-while(True):
+    return mag_rf, mag_lf, mag_rb, mag_lb
+
+def reset_spin():
+    global degrees_spun
+
+    if degrees_spun > 1800:
+
+        spin_amount = 3600 - degrees_spun
+        motor_right_front.spin_for(FORWARD, spin_amount, DEGREES)
+        motor_left_front.spin_for(FORWARD, spin_amount, DEGREES)
+        motor_right_back.spin_for(FORWARD, spin_amount, DEGREES)
+        motor_left_back.spin_for(FORWARD, spin_amount, DEGREES)
+
+    else: 
+
+        spin_amount = degrees_spun
+        motor_right_front.spin_for(REVERSE, spin_amount, DEGREES)
+        motor_left_front.spin_for(REVERSE, spin_amount, DEGREES)
+        motor_right_back.spin_for(REVERSE, spin_amount, DEGREES)
+        motor_left_back.spin_for(REVERSE, spin_amount, DEGREES)
+
+    return
+
+while (True):
     pos_axis3 = controller_1.axis3.position()
+    pos_axis4 = controller_1.axis4.position()
     pos_axis1 = controller_1.axis1.position()
 
-    if abs(pos_axis3) > abs(pos_axis1):
-        current_voltage = (pos_axis3/100) * 12
+    controller_1.buttonB.pressed(reset_spin) # spin the robot to it's start position when button B is pressed
 
-        motor_right_front.spin(FORWARD, current_voltage, VOLT)
-        motor_left_front.spin(REVERSE, current_voltage, VOLT)
-        motor_right_back.spin(FORWARD, current_voltage, VOLT)
-        motor_left_back.spin(REVERSE, current_voltage, VOLT)
+    if abs(pos_axis3) > abs(pos_axis1) or abs(pos_axis4) > abs(pos_axis1):
+
+        voltages = [((x/100) * 12) for x in strafe(pos_axis4, pos_axis3)]
+
+        motor_right_front.spin(FORWARD, voltages[0], VOLT)
+        motor_left_front.spin(REVERSE, voltages[1], VOLT)
+        motor_right_back.spin(FORWARD, voltages[2], VOLT)
+        motor_left_back.spin(REVERSE, voltages[3], VOLT)
+
     elif abs(pos_axis1) > abs(pos_axis3):
-        current_voltage = (pos_axis1/100) * 12
 
-        #motor_right_front.spin(FORWARD, current_voltage, VOLT)
-        #motor_left_front.spin(FORWARD, current_voltage, VOLT)
-        #motor_right_back.spin(FORWARD, current_voltage, VOLT)
-        #motor_left_back.spin(FORWARD, current_voltage, VOLT)
+        # degrees_spun wraps around at 3600
+        # the ratio of wheel radius to robot radius is about 10:1 
+        # so 10 revolutions of the wheels = 1 revolution of the robot approx.
 
-        motor_right_front.sp(FORWARD, 
+        degrees_spun = degrees_spun % 3600
+        spin_amount = (90 * abs(pos_axis1) / 100) / 10
+
+        if pos_axis1 > 0:
+
+            motor_right_front.spin_for(FORWARD, spin_amount, DEGREES)
+            motor_left_front.spin_for(FORWARD, spin_amount, DEGREES)
+            motor_right_back.spin_for(FORWARD, spin_amount, DEGREES)
+            motor_left_back.spin_for(FORWARD, spin_amount, DEGREES)
+            degrees_spun += spin_amount
+
+        else: 
+
+            motor_right_front.spin_for(REVERSE, spin_amount, DEGREES)
+            motor_left_front.spin_for(REVERSE, spin_amount, DEGREES)
+            motor_right_back.spin_for(REVERSE, spin_amount, DEGREES)
+            motor_left_back.spin_for(REVERSE, spin_amount, DEGREES)
+            degrees_spun -= spin_amount
+
     else:
         motor_right_front.stop(HOLD)
         motor_left_front.stop(HOLD)
         motor_right_back.stop(HOLD)
         motor_left_back.stop(HOLD)
-        motor_right_front.
     
 
     
